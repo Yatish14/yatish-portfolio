@@ -1520,9 +1520,24 @@ document.querySelectorAll('.project-card,.tech-card').forEach(card=>{
 // ─── COLOR SWITCHER ───
 const themeToggle = document.getElementById('theme-toggle');
 const colorSwitcherPanel = document.getElementById('color-switcher');
+
 if(themeToggle && colorSwitcherPanel) {
-  themeToggle.addEventListener('click', () => {
+  // Toggle panel when clicking the setting button
+  themeToggle.addEventListener('click', (e) => {
+    e.stopPropagation(); // prevent document click from firing immediately
     colorSwitcherPanel.classList.toggle('open');
+  });
+
+  // Close panel when clicking outside
+  document.addEventListener('click', (e) => {
+    if (colorSwitcherPanel.classList.contains('open') && !colorSwitcherPanel.contains(e.target) && !themeToggle.contains(e.target)) {
+      colorSwitcherPanel.classList.remove('open');
+    }
+  });
+
+  // Prevent clicks inside the panel from closing it (except dots)
+  colorSwitcherPanel.addEventListener('click', (e) => {
+    e.stopPropagation();
   });
 }
 
@@ -1538,6 +1553,11 @@ document.querySelectorAll('.color-dot').forEach(dot=>{
     document.documentElement.style.setProperty('--accent2',accent2);
     document.documentElement.style.setProperty('--border',`rgba(${rgb},0.15)`);
     document.documentElement.style.setProperty('--glow',`0 0 40px rgba(${rgb},0.25)`);
+    
+    // Close panel after selecting a color
+    if (colorSwitcherPanel) {
+      colorSwitcherPanel.classList.remove('open');
+    }
   });
 });
 
